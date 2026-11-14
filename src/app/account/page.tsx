@@ -36,7 +36,7 @@ export default function AccountPage() {
         {status === "error" && <p role="alert">Session service unavailable. Try again.</p>}
         {status === "signed-out" && <p>You are signed out. <Link href="/login">Sign in</Link></p>}
         {status === "signed-in" && <>
-          <p>You're authenticated. Profile onboarding is still being built.</p>
+          <p>You&apos;re authenticated. Profile onboarding is still being built.</p>
           <button className="auth-action" type="button" onClick={() => { void logout(); }}>Sign out</button>
         </>}
       </div>
