@@ -1,7 +1,6 @@
 name: Real Love V2 — Phase A Step 4 runtime verification
 
-# Proposed alternative to developer-machine local Supabase.
-# DO NOT ENABLE until Chat 01 approves an ephemeral GitHub-hosted runner.
+# Approved by Chat 01 for isolated, temporary GitHub-hosted verification only.
 on:
   workflow_dispatch:
 
@@ -14,7 +13,7 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     env:
       # Disposable database created in THIS job by Supabase CLI, never a hosted project.
@@ -54,7 +53,13 @@ jobs:
       - name: Start fresh ephemeral Supabase and apply migration
         run: |
           set -o pipefail
-          supabase start 2>&1 | tee verification-logs/01-start-migrate.log
+          # CLI startup prints disposable keys; never store them in uploaded artifacts.
+          if supabase start >/tmp/real-love-supabase-start.log 2>&1; then
+            echo 'PASS: isolated local Supabase started' | tee verification-logs/01-start-migrate.log
+          else
+            echo 'FAIL: local Supabase startup (full output withheld to avoid credentials)' | tee verification-logs/01-start-migrate.log
+            exit 1
+          fi
           supabase db reset --local --no-seed 2>&1 | tee verification-logs/02-reset-migrate.log
           psql -X -v ON_ERROR_STOP=1 "$LOCAL_DATABASE_URL" -Atc 'select version();' 2>&1 | tee verification-logs/03-postgresql-version.log
 
@@ -73,11 +78,24 @@ jobs:
           set -o pipefail
           bash review/RUN_CONCURRENCY_TEST.sh 2>&1 | tee verification-logs/06-concurrency.log
 
-      - name: Install app dependencies and generate lockfile
+      - name: Verify immutable account and profile ownership
         run: |
           set -o pipefail
-          npm install --no-audit --no-fund 2>&1 | tee verification-logs/07-npm-install.log
-          npm run check 2>&1 | tee verification-logs/08-build-check.log
+          psql -X -v ON_ERROR_STOP=1 "$LOCAL_DATABASE_URL" -f review/TEST_OWNERSHIP_IMMUTABILITY.sql 2>&1 | tee verification-logs/07-ownership.log
+
+      - name: Install exactly from committed lockfile
+        run: |
+          set -o pipefail
+          test -f package-lock.json
+          npm ci --no-audit --no-fund 2>&1 | tee verification-logs/08-npm-ci.log
+
+      - name: Verify application tests, lint, typecheck and build
+        run: |
+          set -o pipefail
+          npm run test 2>&1 | tee verification-logs/09-tests.log
+          npm run lint 2>&1 | tee verification-logs/10-lint.log
+          npm run typecheck 2>&1 | tee verification-logs/11-typecheck.log
+          npm run build 2>&1 | tee verification-logs/12-build.log
 
       - name: Upload PostgreSQL and build evidence
         if: always()
@@ -86,6 +104,5 @@ jobs:
           name: real-love-v2-phase-a-step4-evidence
           path: |
             verification-logs/
-            package-lock.json
           if-no-files-found: warn
           retention-days: 7
