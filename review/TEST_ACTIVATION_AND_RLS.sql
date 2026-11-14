@@ -45,6 +45,9 @@ do $$ begin
 end $$;
 
 update app_private.profile_private set date_of_birth=current_date - interval '20 years' where user_id='a1000000-0000-4000-8000-000000000001';
+-- Give User B an adult DOB so this negative case tests the missing profile specifically.
+insert into app_private.profile_private(user_id,date_of_birth)
+values ('b2000000-0000-4000-8000-000000000002',current_date - interval '20 years');
 -- Missing profile/location/interests/topics: User B is initially incomplete.
 do $$ begin
  begin
@@ -59,7 +62,7 @@ end $$;
 -- Negative: no registration eligibility in CA.
 insert into public.profiles(user_id,display_name,location_id)
 values ('b2000000-0000-4000-8000-000000000002','User B',(select id from public.general_locations where locality='Toronto'));
-insert into app_private.profile_private(user_id,date_of_birth) values ('b2000000-0000-4000-8000-000000000002',current_date - interval '20 years');
+-- User B's valid DOB was inserted before the missing-profile negative test.
 insert into public.user_interests(user_id,interest_id) select 'b2000000-0000-4000-8000-000000000002',id from public.interests;
 insert into public.user_topics(user_id,topic_id) select 'b2000000-0000-4000-8000-000000000002',id from public.topics;
 do $$ begin
