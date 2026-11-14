@@ -1,0 +1,91 @@
+name: Real Love V2 — Phase A Step 4 runtime verification
+
+# Proposed alternative to developer-machine local Supabase.
+# DO NOT ENABLE until Chat 01 approves an ephemeral GitHub-hosted runner.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: v2-phase-a-step4-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      # Disposable database created in THIS job by Supabase CLI, never a hosted project.
+      LOCAL_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres
+    steps:
+      - name: Check out V2 source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Record tool versions
+        run: |
+          mkdir -p verification-logs
+          {
+            node --version
+            npm --version
+            docker --version
+            psql --version
+            supabase --version
+          } 2>&1 | tee verification-logs/00-versions.log
+
+      - name: Start fresh ephemeral Supabase and apply migration
+        run: |
+          set -o pipefail
+          supabase start 2>&1 | tee verification-logs/01-start-migrate.log
+          supabase db reset --local --no-seed 2>&1 | tee verification-logs/02-reset-migrate.log
+          psql -X -v ON_ERROR_STOP=1 "$LOCAL_DATABASE_URL" -Atc 'select version();' 2>&1 | tee verification-logs/03-postgresql-version.log
+
+      - name: Verify schema, grants and FORCE RLS
+        run: |
+          set -o pipefail
+          psql -X -v ON_ERROR_STOP=1 "$LOCAL_DATABASE_URL" -f review/VERIFY_LOCAL_DB.sql 2>&1 | tee verification-logs/04-schema-privileges.log
+
+      - name: Verify activation and role access
+        run: |
+          set -o pipefail
+          psql -X -v ON_ERROR_STOP=1 "$LOCAL_DATABASE_URL" -f review/TEST_ACTIVATION_AND_RLS.sql 2>&1 | tee verification-logs/05-activation-rls.log
+
+      - name: Verify real two-session concurrency
+        run: |
+          set -o pipefail
+          bash review/RUN_CONCURRENCY_TEST.sh 2>&1 | tee verification-logs/06-concurrency.log
+
+      - name: Install app dependencies and generate lockfile
+        run: |
+          set -o pipefail
+          npm install --no-audit --no-fund 2>&1 | tee verification-logs/07-npm-install.log
+          npm run check 2>&1 | tee verification-logs/08-build-check.log
+
+      - name: Upload PostgreSQL and build evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: real-love-v2-phase-a-step4-evidence
+          path: |
+            verification-logs/
+            package-lock.json
+          if-no-files-found: warn
+          retention-days: 7
