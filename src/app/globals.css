@@ -11,3 +11,12 @@ body { margin: 0; background: #fafafa; color: #20232a; font-family: Arial, Helve
 .eyebrow { font-size: .8rem; font-weight: 700; letter-spacing: .12em; }
 h1 { font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.12; letter-spacing: -.03em; }
 p { line-height: 1.6; }
+
+.auth-form { display: flex; flex-direction: column; gap: .65rem; margin: 1.5rem 0; }
+.auth-form label { font-weight: 650; }
+.auth-form input { width: 100%; min-height: 2.75rem; padding: .65rem .8rem; border: 1px solid #777d8a; border-radius: .5rem; background: white; color: #20232a; font: inherit; font-size: 16px; }
+.auth-form button { align-self: flex-start; min-height: 2.75rem; border: none; border-radius: .5rem; background: #292e72; color: white; padding: .65rem 1.2rem; font: inherit; font-weight: 650; cursor: pointer; }
+.auth-form button:disabled { cursor: wait; opacity: .65; }
+.form-help { margin: 0 0 .35rem; font-size: .875rem; color: #535769; }
+.form-error { color: #941d2c; }
+.form-success { color: #136a3e; }
