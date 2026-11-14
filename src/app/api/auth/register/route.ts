@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     return fail("Enter a valid email and a password of at least 12 characters.", 400);
   }
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const url = process.env.SUPABASE_URL;
+  const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY;
   if (!url || !publishableKey) {
     return fail("Registration is not available.", 503);
   }
