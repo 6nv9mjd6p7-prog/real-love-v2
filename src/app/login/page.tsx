@@ -28,7 +28,8 @@ export default function LoginPage() {
         return;
       }
       setPassword("");
-      setMessage("Signed in. Account setup is not yet available.");
+      setMessage("Signed in. Opening your account…");
+      window.location.assign("/account");
     } catch {
       setError("Unable to reach the sign-in service.");
     } finally {
