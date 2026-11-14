@@ -29,6 +29,8 @@ declare t text;
           'public.user_interests','public.user_topics'
         ];
         rejected boolean;
+        owner_exists boolean;
+        target_exists boolean;
 begin
   foreach t in array tables loop
     rejected := false;
@@ -41,12 +43,12 @@ begin
       rejected := true;
     end;
     if not rejected then raise exception 'FAIL: ownership reassignment accepted on %',t; end if;
-    execute format('select 1 from %s where user_id=$1',t)
-      using 'f1000000-0000-4000-8000-000000000001'::uuid;
-    if not found then raise exception 'FAIL: owner record lost on %',t; end if;
-    execute format('select 1 from %s where user_id=$1',t)
-      using 'f2000000-0000-4000-8000-000000000002'::uuid;
-    if found then raise exception 'FAIL: unauthorized owner row created on %',t; end if;
+    execute format('select exists(select 1 from %s where user_id=$1)',t)
+      into owner_exists using 'f1000000-0000-4000-8000-000000000001'::uuid;
+    if not owner_exists then raise exception 'FAIL: owner record lost on %',t; end if;
+    execute format('select exists(select 1 from %s where user_id=$1)',t)
+      into target_exists using 'f2000000-0000-4000-8000-000000000002'::uuid;
+    if target_exists then raise exception 'FAIL: unauthorized owner row created on %',t; end if;
     raise notice 'PASS: % owner immutable',t;
   end loop;
   rejected := false;
