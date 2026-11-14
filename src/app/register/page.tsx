@@ -1,3 +1,4 @@
+import Link from "next/link";
 "use client";
 
 import { useState, type FormEvent } from "react";
@@ -40,7 +41,7 @@ export default function RegistrationPage() {
       <div className="intro">
         <p className="eyebrow">REAL LOVE V2</p>
         <h1>Create an account</h1>
-        <p>Start with your email. You'll build your profile after verification.</p>
+        <p>Start with your email. You&apos;ll build your profile after verification.</p>
         <form onSubmit={submit} className="auth-form">
           <label htmlFor="registration-email">Email address</label>
           <input id="registration-email" type="email" autoComplete="email"
@@ -54,7 +55,7 @@ export default function RegistrationPage() {
         </form>
         {error && <p role="alert" className="form-error">{error}</p>}
         {message && <p role="status" className="form-success">{message}</p>}
-        <p><a href="/">Back to Real Love</a></p>
+        <p><Link href="/">Back to Real Love</Link></p>
       </div>
     </main>
   );
