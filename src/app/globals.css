@@ -1,0 +1,13 @@
+@import "tailwindcss";
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fafafa; color: #20232a; font-family: Arial, Helvetica, sans-serif; }
+.skip-link { position: absolute; top: -10rem; left: 1rem; padding: .75rem; background: #fff; color: #111; z-index: 10; }
+.skip-link:focus { top: 1rem; }
+:focus-visible { outline: 3px solid #4d57ad; outline-offset: 3px; }
+.page-shell { min-height: 100svh; display: grid; place-items: center; padding: clamp(1rem, 5vw, 3rem); }
+.intro { width: min(100%, 42rem); }
+.eyebrow { font-size: .8rem; font-weight: 700; letter-spacing: .12em; }
+h1 { font-size: clamp(2rem, 6vw, 3.5rem); line-height: 1.12; letter-spacing: -.03em; }
+p { line-height: 1.6; }
