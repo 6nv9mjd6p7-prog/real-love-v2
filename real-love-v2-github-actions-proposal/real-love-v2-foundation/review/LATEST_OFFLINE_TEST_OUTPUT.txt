@@ -1,0 +1,145 @@
+TAP version 13
+# Subtest: activation is guarded transactionally, and cannot be invoked by client roles
+ok 1 - activation is guarded transactionally, and cannot be invoked by client roles
+  ---
+  duration_ms: 2.185763
+  type: 'test'
+  ...
+# Subtest: no application direct account activation privileges or permissive policies
+ok 2 - no application direct account activation privileges or permissive policies
+  ---
+  duration_ms: 0.42647
+  type: 'test'
+  ...
+# Subtest: shared account locks serialize eligibility edits and onboarding
+ok 3 - shared account locks serialize eligibility edits and onboarding
+  ---
+  duration_ms: 1.779099
+  type: 'test'
+  ...
+# Subtest: first activation checks country, reactivation validates ongoing profile
+ok 4 - first activation checks country, reactivation validates ongoing profile
+  ---
+  duration_ms: 0.347085
+  type: 'test'
+  ...
+# Subtest: uses a Next.js App Router foundation
+ok 5 - uses a Next.js App Router foundation
+  ---
+  duration_ms: 2.53225
+  type: 'test'
+  ...
+# Subtest: does not ship a database connection or privileged client key
+ok 6 - does not ship a database connection or privileged client key
+  ---
+  duration_ms: 0.687385
+  type: 'test'
+  ...
+# Subtest: supports ordinary mobile scaling and skip navigation
+ok 7 - supports ordinary mobile scaling and skip navigation
+  ---
+  duration_ms: 0.28046
+  type: 'test'
+  ...
+# Subtest: onboarding bootstrap is trusted and inaccessible to clients
+ok 8 - onboarding bootstrap is trusted and inaccessible to clients
+  ---
+  duration_ms: 1.385246
+  type: 'test'
+  ...
+# Subtest: active member validation guards all critical mutations
+ok 9 - active member validation guards all critical mutations
+  ---
+  duration_ms: 0.281158
+  type: 'test'
+  ...
+# Subtest: country registration rule only applies on entry to active
+ok 10 - country registration rule only applies on entry to active
+  ---
+  duration_ms: 1.84551
+  type: 'test'
+  ...
+# Subtest: all timestamped tables have update triggers
+ok 11 - all timestamped tables have update triggers
+  ---
+  duration_ms: 0.388877
+  type: 'test'
+  ...
+# Subtest: activation prerequisites enforced with a database trigger
+ok 12 - activation prerequisites enforced with a database trigger
+  ---
+  duration_ms: 1.671192
+  type: 'test'
+  ...
+# Subtest: auth users ownership and restrictive table access
+ok 13 - auth users ownership and restrictive table access
+  ---
+  duration_ms: 0.890796
+  type: 'test'
+  ...
+# Subtest: exactly 11 Phase A tables; sensitive settings private
+ok 14 - exactly 11 Phase A tables; sensitive settings private
+  ---
+  duration_ms: 1.433386
+  type: 'test'
+  ...
+# Subtest: all tables enabled and forced RLS
+ok 15 - all tables enabled and forced RLS
+  ---
+  duration_ms: 0.591354
+  type: 'test'
+  ...
+# Subtest: approved status, preferences, and country controls
+ok 16 - approved status, preferences, and country controls
+  ---
+  duration_ms: 1.814381
+  type: 'test'
+  ...
+# Subtest: all Phase A tables present
+ok 17 - all Phase A tables present
+  ---
+  duration_ms: 1.235293
+  type: 'test'
+  ...
+# Subtest: explicit RLS on every defined table; no allow policies
+ok 18 - explicit RLS on every defined table; no allow policies
+  ---
+  duration_ms: 1.005524
+  type: 'test'
+  ...
+# Subtest: private schema not exposed in local API config
+ok 19 - private schema not exposed in local API config
+  ---
+  duration_ms: 1.554582
+  type: 'test'
+  ...
+# Subtest: local Supabase has isolated project ID and required services
+ok 20 - local Supabase has isolated project ID and required services
+  ---
+  duration_ms: 2.030761
+  type: 'test'
+  ...
+# Subtest: env template uses loopback and does not contain actual secrets
+ok 21 - env template uses loopback and does not contain actual secrets
+  ---
+  duration_ms: 0.384038
+  type: 'test'
+  ...
+# Subtest: no migrations accidentally imported from V1
+ok 22 - no migrations accidentally imported from V1
+  ---
+  duration_ms: 0.219141
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 280.536026
+
+Bash syntax check: PASS (bash -n review/RUN_CONCURRENCY_TEST.sh)
+PostgreSQL execution: NOT RUN (psql, Docker, Supabase CLI unavailable)
