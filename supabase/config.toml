@@ -38,3 +38,8 @@ double_confirm_changes = true
 [storage]
 enabled = true
 file_size_limit = "10MiB"
+
+# Verification email links return to the V2 app. Tokens are exchanged on the server.
+[auth.email.template.confirmation]
+subject = "Confirm your Real Love email"
+content_path = "./supabase/templates/confirmation.html"
