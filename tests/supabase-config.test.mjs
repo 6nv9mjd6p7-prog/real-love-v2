@@ -5,7 +5,7 @@ const read=p=>readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 test('local Supabase has isolated project ID and required services',()=>{
   const c=read('supabase/config.toml');
   assert.match(c,/project_id\s*=\s*"real-love-v2-local"/);
-  for (const section of ['api','db','auth','auth.email','storage','inbucket']) assert.ok(c.includes(`[${section}]`));
+  for (const section of ['api','db','auth','auth.email','storage','local_smtp']) assert.ok(c.includes(`[${section}]`));
   assert.match(c,/enable_confirmations\s*=\s*true/);
   assert.match(c,/enable_anonymous_sign_ins\s*=\s*false/);
 });
